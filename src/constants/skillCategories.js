@@ -1,0 +1,22 @@
+export const categories = [
+  "Web Development",
+  "Mobile Development",
+  "Data Science",
+  "Machine Learning",
+  "UI/UX Design",
+  "Graphic Design",
+  "Photography",
+  "Writing",
+  "Marketing",
+  "Business Strategy",
+  "Public Speaking",
+  "Music",
+  "Languages",
+  "Fitness",
+  "Cooking",
+  "Mathematics",
+  "Science",
+  "DIY & Crafts",
+  "Finance",
+  "Career Coaching"
+];

@@ -19,29 +19,29 @@ const PostExchangeModal = ({ onClose, onSuccess }) => {
     if (typeof onClose === 'function') {
       onClose();
     } else {
-      console.error(":x: onClose is not a function:", onClose);
+      console.error("❌ onClose is not a function:", onClose);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-const token = localStorage.getItem("jwt");
-if (!token) {
-  alert("You must be logged in to post a skill exchange.");
-  return;
-}
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      alert("You must be logged in to post a skill exchange.");
+      return;
+    }
 
-const formattedData = {
-  ...formData,
-  tags: formData.tags.split(',').map(tag => tag.trim())
-};
+    const formattedData = {
+      ...formData,
+      tags: formData.tags.split(',').map(tag => tag.trim())
+    };
 
-const result = await postSkill(formattedData, token);
-if (result) {
-  onSuccess?.();
-  onClose?.();
-}
+    const result = await postSkill(formattedData, token);
+    if (result) {
+      onSuccess?.();
+      onClose?.();
+    }
   };
 
   return (
