@@ -5,6 +5,7 @@ const ProfileHeader = ({ profile }) => {
   const [showModal, setShowModal] = useState(false);
   const [isCurrentUser, setIsCurrentUser] = useState(false);
 
+  // Check if the current user is the owner of the profile
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     if (token) {
@@ -14,10 +15,12 @@ const ProfileHeader = ({ profile }) => {
         setIsCurrentUser(emailUsername === profile.name);
       } catch (e) {
         console.warn("Failed to decode token:", e);
+        setIsCurrentUser(false); // Default to false if decoding fails
       }
     }
   }, [profile.name]);
 
+  // Generate initials for the profile, fallback to 'SS' if name is missing
   const initials = profile?.name
     ? profile.name.split(' ').map((n) => n[0]).join('').toUpperCase()
     : 'SS';
@@ -48,7 +51,16 @@ const ProfileHeader = ({ profile }) => {
         <EditProfileModal
           profile={profile}
           onClose={() => setShowModal(false)}
-          onSave={() => window.location.reload()} // Or refetch profile data instead
+          onSave={async () => {
+            try {
+              // Example: Refetch the profile data after save
+              const updatedProfile = await getProfile(profile.username);
+              setProfile(updatedProfile); // Update the profile state after saving
+            } catch (error) {
+              console.error('Error saving profile:', error);
+            }
+            setShowModal(false); // Close the modal after saving
+          }}
         />
       )}
     </div>

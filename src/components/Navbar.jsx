@@ -42,12 +42,8 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Feed", path: "/feed" },
     { name: "Messages", path: "/messages" },
-    ...(isLoggedIn
-      ? [
-          { name: "Sessions", path: "/sessions" },
-          { name: "Profile", path: `/profile/${username}` },
-        ]
-      : []),
+    { name: "Sessions", path: "/sessions" },  // Still show Sessions even if Profile is removed
+    // Profile is removed from here
   ];
 
   return (
