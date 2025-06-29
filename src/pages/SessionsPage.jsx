@@ -1,0 +1,130 @@
+import React, { useEffect, useState } from 'react';
+import { getSessions, updateSessionStatus } from '../services/scheduleSession';
+
+const statusLabels = {
+  all: 'All',
+  pending: 'Pending',
+  accepted: 'Accepted',
+  rejected: 'Rejected'
+};
+
+const SessionsPage = () => {
+  const [sessions, setSessions] = useState([]);
+  const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  const fetchSessions = async () => {
+    try {
+      setLoading(true);
+      const data = await getSessions();
+      setSessions(data);
+    } catch (err) {
+      console.error("❌ Error fetching sessions:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateSessionStatus(id, newStatus);
+      fetchSessions(); // Refresh list
+    } catch (err) {
+      console.error(`❌ Failed to update session ${id}:`, err);
+    }
+  };
+
+  const filteredSessions = sessions.filter((s) =>
+    filter === 'all' ? true : s.status === filter
+  );
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6 text-blue-700">📅 Your Scheduled Sessions</h1>
+
+      {/* Filter buttons */}
+      <div className="flex gap-3 mb-6">
+        {Object.keys(statusLabels).map((key) => (
+          <button
+            key={key}
+            onClick={() => setFilter(key)}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border ${
+              filter === key
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            {statusLabels[key]}
+          </button>
+        ))}
+      </div>
+
+      {/* Session cards */}
+      {loading ? (
+        <p>Loading sessions...</p>
+      ) : filteredSessions.length === 0 ? (
+        <p className="text-gray-500">No sessions in this category.</p>
+      ) : (
+        <div className="space-y-4">
+          {filteredSessions.map((sesh) => (
+            <div key={sesh.id} className="border rounded-lg shadow-sm p-4 bg-white">
+              <div className="mb-2">
+                <p className="text-sm text-gray-600">
+                  <strong>Scheduled with:</strong>{' '}
+                  <span className="text-gray-800">
+                    {sesh.recipient_email || sesh.requester_email || 'Unknown'}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  <strong>Time:</strong>{' '}
+                  {sesh.scheduled_time
+                    ? new Date(sesh.scheduled_time).toLocaleString()
+                    : 'Not set'}
+                </p>
+              </div>
+              {sesh.message && (
+                <p className="text-gray-700 mb-2"><strong>Note:</strong> {sesh.message}</p>
+              )}
+              <div className="flex items-center justify-between">
+                <span
+                  className={`px-3 py-1 text-xs rounded-full font-medium ${
+                    (sesh.status || 'pending') === 'pending'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : sesh.status === 'accepted'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
+                  }`}
+                >
+                  {(sesh.status || 'pending').toUpperCase()}
+                </span>
+
+                {(sesh.status || 'pending') === 'pending' && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleStatusChange(sesh.id, 'accepted')}
+                      className="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-700"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleStatusChange(sesh.id, 'rejected')}
+                      className="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SessionsPage;
