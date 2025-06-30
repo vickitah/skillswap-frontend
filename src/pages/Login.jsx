@@ -24,7 +24,7 @@ export default function Login({ onLogin }) {
 
   const callProtectedRoute = async (jwt) => {
     try {
-      const res = await fetch("http://localhost:5000/api/protected", {
+      const res = await fetch("https://skillswap-backend-qky7.onrender.com/api/protected", {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       const data = await res.json();
@@ -38,7 +38,7 @@ export default function Login({ onLogin }) {
     try {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
-      const res = await fetch("http://localhost:5000/api/login", {
+      const res = await fetch("https://skillswap-backend-qky7.onrender.com/api/login", {  // Live URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
@@ -82,7 +82,7 @@ export default function Login({ onLogin }) {
       }
 
       const idToken = await userCredential.user.getIdToken();
-      const res = await fetch("http://localhost:5000/api/login", {
+      const res = await fetch("https://skillswap-backend-qky7.onrender.com/api/login", {  // Live URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),

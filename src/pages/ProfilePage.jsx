@@ -1,4 +1,3 @@
-// src/pages/ProfilePage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ProfileHeader from '../components/ProfileHeader';
@@ -20,11 +19,15 @@ const ProfilePage = () => {
     const fetchProfile = async () => {
       try {
         const data = await getProfile(username);
-        setProfile(data);
-        setError(null);
+        if (data) {
+          setProfile(data);
+          setError(null);
+        } else {
+          setError("Profile not found.");
+        }
       } catch (err) {
         console.error(err);
-        setError('Could not load profile.');
+        setError('Could not load profile. Please try again later.');
       }
     };
 
@@ -56,11 +59,17 @@ const ProfilePage = () => {
       }));
     } catch (err) {
       console.error(`❌ Failed to delete skill:`, err);
+      setError("Failed to delete skill. Please try again.");
     }
   };
 
   if (error) return <div className="p-4 text-red-600">{error}</div>;
-  if (!profile) return <div className="p-4">Loading profile...</div>;
+  if (!profile) return (
+    <div className="p-4">
+      <div>Loading profile...</div>
+      <div className="spinner"></div> {/* Add a spinner or loading indicator here */}
+    </div>
+  );
 
   return (
     <div className="max-w-4xl mx-auto p-4">
