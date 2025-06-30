@@ -16,7 +16,7 @@ export const useFetchSkills = (filters) => {
       if (filters.category) params.append('category', filters.category);
       filters.tags.forEach(tag => params.append('tags', tag));
 
-      const res = await fetch(`${API_BASE}/api/skills/?${params.toString()}`);
+      const res = await fetch(`${API_BASE}/skills/?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch skills");
 
       const data = await res.json();
