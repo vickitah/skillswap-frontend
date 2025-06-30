@@ -33,7 +33,7 @@ export const fetchSkills = async (filters = {}) => {
 // ✅ Post a new skill exchange (requires JWT)
 export const postSkill = async (skillData, token = null) => {
   try {
-    const jwt = token || localStorage.getItem("jwt");
+    const jwt = token || localStorage.getItem("token"); // ✅ fixed key
     if (!jwt) {
       console.warn("⚠️ [postSkill] No JWT token found");
       return null;
@@ -41,9 +41,9 @@ export const postSkill = async (skillData, token = null) => {
 
     const res = await fetch(`${API_BASE}/skills/`, {
       method: "POST",
-     headers: {
-   'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`, // token from localStorage
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`, // ✅ fixed variable name
       },
       body: JSON.stringify(skillData),
     });

@@ -25,7 +25,7 @@ const refreshJwtToken = async () => {
 const fetchWithAuth = async (url, options = {}) => {
   let token = localStorage.getItem("token");
 
-  const res = await fetch(url, {
+  let res = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -38,12 +38,11 @@ const fetchWithAuth = async (url, options = {}) => {
     let data = {};
     try {
       data = await res.json();
-    } catch (_) {
-      // Not a JSON response
-    }
+    } catch (_) {}
 
     if (data.message === "Token expired") {
       try {
+        await new Promise(r => setTimeout(r, 300)); // Optional: delay
         token = await refreshJwtToken();
         const retryRes = await fetch(url, {
           ...options,
@@ -55,11 +54,18 @@ const fetchWithAuth = async (url, options = {}) => {
         });
         return retryRes;
       } catch (err) {
-        // Optional: force logout if refresh fails
-        // logoutUser();
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
         throw new Error("Session expired. Please log in again.");
       }
     }
+
+    // 🔴 If 401 but not token expired
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/login";
+    throw new Error(data.message || "Unauthorized. Please log in again.");
   }
 
   return res;
