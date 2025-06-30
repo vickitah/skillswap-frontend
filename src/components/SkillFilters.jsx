@@ -11,19 +11,27 @@ const SkillFilters = ({ filters, setFilters }) => {
   };
 
   return (
-    <div className="flex gap-4 items-center mb-4">
-      <select
-        value={filters.category}
-        onChange={handleCategoryChange}
-        className="border p-2 rounded-xl"
-      >
-        <option value="">All Categories</option>
-        {categories.map((cat, i) => (
-          <option key={i} value={cat}>{cat}</option>
-        ))}
-      </select>
+    <div className="flex flex-wrap gap-4 items-center mb-4">
+      <label className="text-sm font-medium">
+        Category:
+        <select
+          value={filters.category}
+          onChange={handleCategoryChange}
+          className="ml-2 border p-2 rounded-xl focus:outline-none focus:ring focus:ring-indigo-300"
+        >
+          <option value="">All Categories</option>
+          {categories.map((cat, i) => (
+            <option key={i} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+      </label>
 
-      <button onClick={clearAll} className="text-sm text-red-500 underline">
+      <button
+        onClick={clearAll}
+        className="text-sm text-red-600 underline hover:text-red-800 transition"
+      >
         Clear All
       </button>
     </div>

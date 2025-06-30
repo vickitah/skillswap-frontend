@@ -5,7 +5,7 @@ const EditProfileModal = ({ profile, onClose, onSave }) => {
   const [tagline, setTagline] = useState(profile.tagline);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null); // Error state for feedback
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('token');  // Get token from localStorage
 
   // Ensure token exists before submitting
   if (!token) {
