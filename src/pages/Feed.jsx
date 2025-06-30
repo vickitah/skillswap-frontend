@@ -4,13 +4,13 @@ import PopularTags from '../components/PopularTags';
 import SkillCard from '../components/SkillCard';
 import SearchBar from '../components/SearchBar';
 import PostExchangeModal from '../components/PostExchangeModal';
-import { useFetchSkills } from '../hooks/useFetchSkills'; // ✅ new hook
+import { useFetchSkills } from '../hooks/useFetchSkills'; // ✅ custom hook
 
 const Feed = () => {
   const [filters, setFilters] = useState({ category: '', search: '', tags: [] });
   const [showModal, setShowModal] = useState(false);
 
-  const { skills, loading, error } = useFetchSkills(filters);
+  const { skills, loading, error, refetch } = useFetchSkills(filters); // ✅ include refetch
 
   return (
     <div className="p-4 max-w-5xl mx-auto">
@@ -42,7 +42,10 @@ const Feed = () => {
       {showModal && (
         <PostExchangeModal
           onClose={() => setShowModal(false)}
-          onSuccess={() => window.location.reload()} // simple reload to re-trigger hook
+          onSuccess={() => {
+            setShowModal(false);  
+            refetch();           
+          }}
         />
       )}
     </div>

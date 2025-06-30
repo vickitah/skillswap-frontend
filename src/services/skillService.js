@@ -1,70 +1,129 @@
-const API_BASE = import.meta.env.VITE_API_URL;
+import React, { useState } from 'react';
+import { postSkill } from '../services/skillService';
 
-// ✅ Fetch skill posts with optional filters
-export const fetchSkills = async (filters = {}) => {
-  try {
-    const params = new URLSearchParams();
+const PostExchangeModal = ({ onClose, onSuccess }) => {
+  const [formData, setFormData] = useState({
+    offering: '',
+    wanting: '',
+    description: '',
+    category: '',
+    tags: ''
+  });
+  const [posting, setPosting] = useState(false);
 
-    if (filters.search) params.append("search", filters.search.trim());
-    if (filters.category) params.append("category", filters.category);
-    if (Array.isArray(filters.tags)) {
-      filters.tags.forEach(tag => params.append("tags", tag));
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCancel = () => {
+    console.log("Cancel clicked");
+    if (typeof onClose === 'function') {
+      onClose();
+    } else {
+      console.error("❌ onClose is not a function:", onClose);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (posting) return; // Prevent double submit
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to post a skill exchange.");
+      return;
     }
 
-    const fullUrl = `${API_BASE}/skills?${params.toString()}`;
-    console.log("🔎 [fetchSkills] URL:", fullUrl);
+    const formattedData = {
+      ...formData,
+      tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
+    };
 
-    const res = await fetch(fullUrl);
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("❌ [fetchSkills] Server error:", res.status, data);
-      return [];
-    }
-
-    console.log("✅ [fetchSkills] Success:", data);
-    return data;
-  } catch (err) {
-    console.error("💥 [fetchSkills] Network error:", err);
-    return [];
-  }
-};
-
-// ✅ Post a new skill exchange (requires JWT)
-export const postSkill = async (skillData, token = null) => {
-  try {
-    const jwt = token || localStorage.getItem("token");
-    if (!jwt) {
-      console.warn("⚠️ [postSkill] No JWT token found");
-      return null;
-    }
-
-    const res = await fetch(`${API_BASE}/skills`, { // 🔧 fixed trailing slash
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
-      body: JSON.stringify(skillData),
-    });
-
-    let data;
+    setPosting(true);
     try {
-      data = await res.json();
-    } catch (jsonError) {
-      console.error("❌ [postSkill] Failed to parse JSON:", jsonError);
-      return null;
+      console.log("Submitting skill exchange:", formattedData);
+      const result = await postSkill(formattedData, token);
+      if (result) {
+        onSuccess?.();
+        onClose?.();
+      } else {
+        alert("Failed to post skill. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error posting skill:", err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setPosting(false);
     }
+  };
 
-    if (!res.ok) {
-      console.error("❌ [postSkill] Server error:", res.status, data);
-      return null;
-    }
-
-    console.log("✅ [postSkill] Success:", data);
-    return data;
-  } catch (err) {
-    console.error("💥 [postSkill] Network or fetch error:", err);
-    return null;
-  }
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Post a New Exchange</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input
+            type="text"
+            name="offering"
+            placeholder="What skill are you offering?"
+            value={formData.offering}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-xl"
+            required
+          />
+          <input
+            type="text"
+            name="wanting"
+            placeholder="What skill are you looking for?"
+            value={formData.wanting}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-xl"
+            required
+          />
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-xl"
+          />
+          <input
+            type="text"
+            name="tags"
+            placeholder="Tags (comma-separated)"
+            value={formData.tags}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-xl"
+          />
+          <textarea
+            name="description"
+            placeholder="Brief description"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-xl"
+          />
+          <div className="flex justify-between">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="text-gray-600 hover:underline"
+              disabled={posting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={posting}
+              className={`bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 ${posting ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {posting ? "Submitting..." : "Submit"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
+
+export default PostExchangeModal;
