@@ -5,7 +5,6 @@ import Navbar from './components/Navbar';
 import Feed from './pages/Feed';
 import Login from './pages/Login';
 import Messages from './pages/Messages';
-import TestToken from './components/TestToken';
 import HomePage from './pages/HomePage'; // ✅ Add this import
 import SearchPage from './pages/SearchPage';
 import SessionsPage from './pages/SessionsPage'; // ✅ NEW import
@@ -20,8 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/sessions" element={<SessionsPage />} />
-        <Route path="/test" element={<TestToken />} />
+        <Route path="/sessions" element={<SessionsPage />} />        
       </Routes>
     </>
   );
