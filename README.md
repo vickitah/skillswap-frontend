@@ -1,4 +1,4 @@
-# 🧠 SkillSwap
+#  SkillSwap
 
 SkillSwap is a collaborative platform where users exchange knowledge by teaching and learning from one another — no money involved, just pure skill sharing.
 
@@ -77,7 +77,7 @@ Test login, posting exchanges, messaging, and scheduling by signing in with mult
 ---
 
 
+## License
 
-## 📄 License
+This project is licensed under the [MIT License](./LICENSE).
 
-MIT License — free to use and modify!
