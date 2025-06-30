@@ -110,3 +110,4 @@ export const deleteSkill = async (skill, type) => {
 //   localStorage.removeItem("user");
 //   window.location.href = "/login";
 // };
+export { API_BASE };
