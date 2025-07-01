@@ -58,7 +58,8 @@ const ProfileHeader = ({ profile, setProfile }) => {
           onClose={() => setShowModal(false)}
           onSave={async () => {
             try {
-              const updated = await getProfile(profile.username);
+              const updated = await getProfile(profile.email);
+
               setProfile(updated);
             } catch (err) {
               console.error('Error fetching updated profile:', err);
