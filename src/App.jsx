@@ -8,7 +8,6 @@ import Messages from './pages/Messages';
 import HomePage from './pages/HomePage';
 import SearchPage from './pages/SearchPage';
 import SessionsPage from './pages/SessionsPage';
-import ProfilePage from './pages/ProfilePage'; // ✅ Import this
 
 function App() {
   return (
@@ -21,7 +20,7 @@ function App() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/sessions" element={<SessionsPage />} />
-        <Route path="/profile/:username" element={<ProfilePage />} /> {/* ✅ Add this */}
+        
       </Routes>
     </>
   );

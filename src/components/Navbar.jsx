@@ -64,17 +64,6 @@ const Navbar = () => {
           </Link>
         ))}
 
-        {isLoggedIn && (
-          <Link
-            to={`/profile/${username}`}
-            className={`text-sm font-medium ${
-              isActive("/profile") ? "text-blue-600" : "text-gray-700"
-            } hover:text-blue-500`}
-          >
-            My Profile
-          </Link>
-        )}
-
         {!isLoggedIn ? (
           <>
             <Link to="/login?mode=signin" className="ml-4 text-sm text-blue-600 hover:underline">
