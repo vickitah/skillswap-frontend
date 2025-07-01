@@ -1,10 +1,9 @@
-import { auth } from "../firebase"; // ✅ Adjust if your path is different
+import { auth } from "../firebase"; // ✅ Adjust if needed
 import { waitForAuthReady } from "../utils/authHelpers";
-
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-// ✅ Refresh token helper
+// ✅ Refresh JWT token
 const refreshJwtToken = async () => {
   const user = auth.currentUser;
   if (!user) throw new Error("Not logged in");
@@ -23,7 +22,7 @@ const refreshJwtToken = async () => {
   return data.token;
 };
 
-// ✅ Send a message (SkillCard, ChatInput, etc.)
+// ✅ Send a message (normal or swap request)
 export const sendMessage = async (messageData, token) => {
   try {
     if (!token) token = localStorage.getItem("token");
@@ -31,6 +30,9 @@ export const sendMessage = async (messageData, token) => {
       console.warn("⚠️ No JWT token provided.");
       return null;
     }
+
+    // Optional: Ensure message type is present
+    if (!messageData.type) messageData.type = "message"; // or "swap_request"
 
     console.log("📤 [sendMessage] Sending:", messageData);
 

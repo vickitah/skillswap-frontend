@@ -19,10 +19,14 @@ const SkillCard = ({ skill }) => {
 
     const content = `Hi! I'm interested in swapping my skill for your offering: "${skill.offering}"`;
 
-    const result = await sendMessage({
-      receiver_email: skill.owner_email,
-      content,
-    }, token); // ✅ token now passed correctly
+    const result = await sendMessage(
+      {
+        receiver_email: skill.owner_email,
+        content,
+        type: "swap_request", // ✅ Explicitly mark this as a swap request
+      },
+      token
+    );
 
     if (result) {
       alert("✅ Swap request sent!");
