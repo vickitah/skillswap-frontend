@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import EditProfileModal from './EditProfileModal';
-import { getProfile } from '../services/profileService'; // ✅ Add this if not imported
+import { getProfile } from '../utils/api';
 
 const ProfileHeader = ({ profile, setProfile }) => {
   const [showModal, setShowModal] = useState(false);
