@@ -25,7 +25,7 @@ const Navbar = () => {
       setUser(null);
       setIsLoggedIn(false);
     }
-  }, [location.pathname]); // Re-run on route change (in case user updates profile etc)
+  }, [location.pathname]); // Re-run on route change
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -42,8 +42,7 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Feed", path: "/feed" },
     { name: "Messages", path: "/messages" },
-    { name: "Sessions", path: "/sessions" },  // Still show Sessions even if Profile is removed
-    // Profile is removed from here
+    { name: "Sessions", path: "/sessions" },
   ];
 
   return (
@@ -65,6 +64,17 @@ const Navbar = () => {
           </Link>
         ))}
 
+        {isLoggedIn && (
+          <Link
+            to={`/profile/${username}`}
+            className={`text-sm font-medium ${
+              isActive("/profile") ? "text-blue-600" : "text-gray-700"
+            } hover:text-blue-500`}
+          >
+            My Profile
+          </Link>
+        )}
+
         {!isLoggedIn ? (
           <>
             <Link to="/login?mode=signin" className="ml-4 text-sm text-blue-600 hover:underline">
@@ -76,7 +86,7 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <span className="text-sm text-gray-500 hidden sm:inline">Hi, {user?.email}</span>
+            <span className="text-sm text-gray-500 hidden sm:inline">Hi, {username}</span>
             <button
               onClick={handleLogout}
               className="ml-4 text-sm text-red-500 hover:underline"
