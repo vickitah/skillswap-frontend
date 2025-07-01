@@ -16,7 +16,7 @@ export default function Messages() {
   const toParam = queryParams.get("to");
 
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
+    const jwt = localStorage.getItem("jwt"); // ✅ updated
     if (jwt) {
       try {
         const payload = JSON.parse(atob(jwt.split('.')[1]));
@@ -32,6 +32,7 @@ export default function Messages() {
     setLoading(true);
     try {
       const msgs = await getMessages(token);
+      console.log("📥 Messages fetched:", msgs); // ✅ Debug log
       const grouped = groupMessagesByUser(msgs, email);
       setConversations(grouped);
 
@@ -40,7 +41,6 @@ export default function Messages() {
         if (match) {
           setActiveConversation(match);
         } else {
-          // Start empty chat if no prior messages
           setActiveConversation({ email: toParam, messages: [] });
         }
       }
@@ -62,8 +62,8 @@ export default function Messages() {
   };
 
   const handleSendMessage = async (content) => {
-    const token = localStorage.getItem("jwt");
-    if (!token || !activeConversation || !activeConversation.email) {
+    const token = localStorage.getItem("jwt"); // ✅ consistent token usage
+    if (!token || !activeConversation?.email) {
       console.warn("Cannot send message: Missing token or recipient.");
       return;
     }
@@ -76,7 +76,6 @@ export default function Messages() {
       );
 
       if (success) {
-        // Refresh only active conversation instead of all messages
         await loadMessages(token, currentUserEmail);
       }
     } catch (error) {
