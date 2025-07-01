@@ -104,10 +104,5 @@ export const deleteSkill = async (skill, type) => {
   return handleResponse(res);
 };
 
-// (Optional helper, currently unused)
-// const logoutUser = () => {
-//   localStorage.removeItem("token");
-//   localStorage.removeItem("user");
-//   window.location.href = "/login";
-// };
+
 export { API_BASE };

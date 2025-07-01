@@ -75,6 +75,13 @@ VITE_API_URL=http://localhost:5000/api
 Test login, posting exchanges, messaging, and scheduling by signing in with multiple accounts.
 
 ---
+## 📚 API Documentation
+
+You can view the full Swagger-generated API docs here:
+
+👉 [SkillSwap API Docs](https://skillswap-backend-qky7.onrender.com/docs)
+
+
 
 
 ## License
