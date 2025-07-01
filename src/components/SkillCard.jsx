@@ -11,7 +11,7 @@ const SkillCard = ({ skill }) => {
   };
 
   const handleSwapRequest = async () => {
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("token");
     if (!token) {
       alert("You must be logged in to send a swap request.");
       return;

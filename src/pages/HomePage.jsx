@@ -1,10 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-     
 
       {/* Hero */}
       <section className="text-center py-20 px-4 bg-blue-50">
@@ -14,7 +13,7 @@ export default function HomePage() {
         </p>
         <div className="space-x-4">
           <Link to="/feed" className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Explore Skills</Link>
-          <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded hover:bg-blue-100">Watch Demo</button>
+          
         </div>
       </section>
 
@@ -23,10 +22,10 @@ export default function HomePage() {
         <h3 className="text-3xl font-bold text-center mb-10">How SkillSwap Works</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           {[
-            { icon: '🤝', title: 'Smart Matching', desc: 'Connects students with complementary skills.' },
-            { icon: '💬', title: 'Easy Communication', desc: 'Built-in chat to coordinate lessons.' },
-            { icon: '⭐', title: 'Verified Reviews', desc: 'Rate your exchange partners.' },
-            { icon: '🎯', title: 'Goal Tracking', desc: 'Track your progress with analytics.' },
+            { icon: "🤝", title: "Smart Matching", desc: "Connects students with complementary skills." },
+            { icon: "💬", title: "Easy Communication", desc: "Built-in chat to coordinate lessons." },
+            { icon: "⭐", title: "Verified Reviews", desc: "Rate your exchange partners." },
+            { icon: "🎯", title: "Goal Tracking", desc: "Track your progress with analytics." },
           ].map(({ icon, title, desc }) => (
             <div key={title} className="bg-gray-100 p-6 rounded-xl shadow">
               <div className="text-4xl mb-4">{icon}</div>
@@ -42,15 +41,15 @@ export default function HomePage() {
         <h3 className="text-3xl font-bold text-center mb-10">Popular Skill Categories</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { category: 'Programming', exchanges: 127, skills: ['React', 'Python', 'JavaScript'] },
-            { category: 'Design', exchanges: 89, skills: ['UI/UX', 'Figma', 'Photoshop'] },
-            { category: 'Languages', exchanges: 156, skills: ['Spanish', 'French', 'Mandarin'] },
-            { category: 'Music', exchanges: 67, skills: ['Guitar', 'Piano', 'Vocals'] },
+            { category: "Programming", exchanges: 127, skills: ["React", "Python", "JavaScript"] },
+            { category: "Design", exchanges: 89, skills: ["UI/UX", "Figma", "Photoshop"] },
+            { category: "Languages", exchanges: 156, skills: ["Spanish", "French", "Mandarin"] },
+            { category: "Music", exchanges: 67, skills: ["Guitar", "Piano", "Vocals"] },
           ].map(({ category, exchanges, skills }) => (
             <div key={category} className="bg-white p-6 rounded-xl shadow">
               <h4 className="font-semibold text-xl mb-2">{category}</h4>
               <p className="text-sm text-gray-500 mb-2">{exchanges} exchanges</p>
-              <p className="text-sm text-gray-600">Popular skills: {skills.join(', ')}</p>
+              <p className="text-sm text-gray-600">Popular skills: {skills.join(", ")}</p>
             </div>
           ))}
         </div>
@@ -61,9 +60,9 @@ export default function HomePage() {
         <h3 className="text-3xl font-bold text-center mb-10">Success Stories</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { quote: 'Taught design and learned React. My partner was incredibly patient.', name: 'Hussein osman', skill: 'Learned React' },
-            { quote: 'Found the perfect language exchange partner. We practice daily.', name: 'christine Muigai', skill: 'Learned Spanish' },
-            { quote: 'Outstanding quality of exchanges. I improved my photography.', name: 'mohammed issa', skill: 'Learned Photography' },
+            { quote: 'Taught design and learned React. My partner was incredibly patient.', name: 'Hussein Osman', skill: 'Learned React' },
+            { quote: 'Found the perfect language exchange partner. We practice daily.', name: 'Christine Muigai', skill: 'Learned Spanish' },
+            { quote: 'Outstanding quality of exchanges. I improved my photography.', name: 'Mohammed Issa', skill: 'Learned Photography' },
           ].map(({ quote, name, skill }) => (
             <div key={name} className="bg-gray-100 p-6 rounded-xl shadow text-center">
               <p className="italic mb-4">"{quote}"</p>
@@ -89,24 +88,24 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <h4 className="font-bold mb-2">Platform</h4>
-            <p>Browse Skills</p>
-            <p>Search</p>
-            <p>Profile</p>
-            <p>Messages</p>
+            <Link to="/feed" className="block mb-2">Browse Skills</Link>
+            <Link to="/search" className="block mb-2">Search</Link>
+            <Link to="/profile" className="block mb-2">Profile</Link>
+            <Link to="/messages" className="block mb-2">Messages</Link>
           </div>
           <div>
             <h4 className="font-bold mb-2">Support</h4>
-            <p>Help Center</p>
-            <p>Community Guidelines</p>
-            <p>Safety</p>
-            <p>Contact Us</p>
+            <Link to="/help-center" className="block mb-2">Help Center</Link>
+            <Link to="/community-guidelines" className="block mb-2">Community Guidelines</Link>
+            <Link to="/safety" className="block mb-2">Safety</Link>
+            <Link to="/contact-us" className="block mb-2">Contact Us</Link>
           </div>
           <div>
             <h4 className="font-bold mb-2">Connect</h4>
-            <p>Discord Community</p>
-            <p>Instagram</p>
-            <p>Twitter</p>
-            <p>LinkedIn</p>
+            <a href="https://discord.com" className="block mb-2">Discord Community</a>
+            <a href="https://instagram.com" className="block mb-2">Instagram</a>
+            <a href="https://twitter.com" className="block mb-2">Twitter</a>
+            <a href="https://linkedin.com" className="block mb-2">LinkedIn</a>
           </div>
           <div>
             <h4 className="font-bold mb-2">© 2024 SkillSwap</h4>

@@ -26,7 +26,7 @@ const PostExchangeModal = ({ onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("token"); // ✅ Fixed from "jwt" to "token"
     if (!token) {
       alert("You must be logged in to post a skill exchange.");
       return;

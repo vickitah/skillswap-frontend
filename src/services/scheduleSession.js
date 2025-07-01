@@ -4,7 +4,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 
 // 🗓️ Schedule a session
 export const scheduleSession = async ({ recipient_email, scheduled_time, message }) => {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('token');  // ✅ Fixed key
   if (!token) throw new Error("No auth token found");
 
   const res = await axios.post(`${API_BASE}/sessions/`, {
@@ -23,7 +23,7 @@ export const scheduleSession = async ({ recipient_email, scheduled_time, message
 
 // 📥 Get all sessions for the logged-in user
 export const getSessions = async () => {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('token');  // ✅ Fixed key
   if (!token) throw new Error("No auth token found");
 
   const res = await axios.get(`${API_BASE}/sessions/`, {
@@ -37,7 +37,7 @@ export const getSessions = async () => {
 
 // ✅ Accept or reject a session
 export const updateSessionStatus = async (sessionId, newStatus) => {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('token');  // ✅ Fixed key
   if (!token) throw new Error("No auth token found");
 
   const res = await axios.patch(`${API_BASE}/sessions/${sessionId}/`, {

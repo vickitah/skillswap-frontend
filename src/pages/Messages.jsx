@@ -1,4 +1,3 @@
-// pages/Messages.jsx
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getMessages, sendMessage } from '../services/messageService';
@@ -10,6 +9,7 @@ export default function Messages() {
   const [conversations, setConversations] = useState([]);
   const [activeConversation, setActiveConversation] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -29,18 +29,25 @@ export default function Messages() {
   }, []);
 
   const loadMessages = async (token, email) => {
-    const msgs = await getMessages(token);
-    const grouped = groupMessagesByUser(msgs, email);
-    setConversations(grouped);
+    setLoading(true);
+    try {
+      const msgs = await getMessages(token);
+      const grouped = groupMessagesByUser(msgs, email);
+      setConversations(grouped);
 
-    if (toParam) {
-      const match = grouped.find(c => c.email === toParam);
-      if (match) {
-        setActiveConversation(match);
-      } else {
-        // Start empty chat if no prior messages
-        setActiveConversation({ email: toParam, messages: [] });
+      if (toParam) {
+        const match = grouped.find(c => c.email === toParam);
+        if (match) {
+          setActiveConversation(match);
+        } else {
+          // Start empty chat if no prior messages
+          setActiveConversation({ email: toParam, messages: [] });
+        }
       }
+    } catch (error) {
+      console.error("Error loading messages:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,22 +62,29 @@ export default function Messages() {
   };
 
   const handleSendMessage = async (content) => {
-  const token = localStorage.getItem("jwt");
-  if (!token || !activeConversation || !activeConversation.email) {
-    console.warn("Cannot send message: Missing token or recipient.");
-    return;
-  }
+    const token = localStorage.getItem("jwt");
+    if (!token || !activeConversation || !activeConversation.email) {
+      console.warn("Cannot send message: Missing token or recipient.");
+      return;
+    }
 
-  const success = await sendMessage(
-    { receiver_email: activeConversation.email, content },
-    token
-  );
+    try {
+      setLoading(true);
+      const success = await sendMessage(
+        { receiver_email: activeConversation.email, content },
+        token
+      );
 
-  if (success) {
-    await loadMessages(token, currentUserEmail); // Refresh chat
-  }
-};
-
+      if (success) {
+        // Refresh only active conversation instead of all messages
+        await loadMessages(token, currentUserEmail);
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -80,7 +94,11 @@ export default function Messages() {
         onSelect={setActiveConversation}
       />
       <main className="flex-1 flex flex-col">
-        {activeConversation ? (
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center text-gray-500">
+            Loading...
+          </div>
+        ) : activeConversation ? (
           <>
             <header className="p-4 border-b bg-white shadow-sm">
               <h3 className="text-lg font-bold">Chat with {activeConversation.email}</h3>

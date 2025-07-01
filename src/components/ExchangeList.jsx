@@ -1,12 +1,15 @@
-// src/components/ExchangeList.jsx
 import React from 'react';
 import ExchangeItem from './ExchangeItem';
 
-const ExchangeList = ({ exchanges }) => {
+const ExchangeList = ({ exchanges = [] }) => {
+  if (exchanges.length === 0) {
+    return <p>No exchanges found.</p>;
+  }
+
   return (
     <div className="space-y-4">
-      {exchanges.map((ex, idx) => (
-        <ExchangeItem key={idx} exchange={ex} />
+      {exchanges.map((exchange) => (
+        <ExchangeItem key={exchange.id || exchange.name} exchange={exchange} />  
       ))}
     </div>
   );

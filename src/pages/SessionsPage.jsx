@@ -5,24 +5,27 @@ const statusLabels = {
   all: 'All',
   pending: 'Pending',
   accepted: 'Accepted',
-  rejected: 'Rejected'
+  rejected: 'Rejected',
 };
 
 const SessionsPage = () => {
   const [sessions, setSessions] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchSessions();
   }, []);
 
   const fetchSessions = async () => {
+    setLoading(true);
+    setError('');
     try {
-      setLoading(true);
       const data = await getSessions();
       setSessions(data);
     } catch (err) {
+      setError('❌ Failed to load sessions. Please try again later.');
       console.error("❌ Error fetching sessions:", err);
     } finally {
       setLoading(false);
@@ -35,6 +38,7 @@ const SessionsPage = () => {
       fetchSessions(); // Refresh list
     } catch (err) {
       console.error(`❌ Failed to update session ${id}:`, err);
+      setError('❌ Failed to update session status.');
     }
   };
 
@@ -63,11 +67,16 @@ const SessionsPage = () => {
         ))}
       </div>
 
+      {/* Error Message */}
+      {error && <p className="text-red-600 mb-4">{error}</p>}
+
       {/* Session cards */}
       {loading ? (
-        <p>Loading sessions...</p>
+        <div className="text-center">
+          <p className="text-gray-500">Loading sessions...</p>
+        </div>
       ) : filteredSessions.length === 0 ? (
-        <p className="text-gray-500">No sessions in this category.</p>
+        <p className="text-center text-gray-500 mt-10">No sessions in this category.</p>
       ) : (
         <div className="space-y-4">
           {filteredSessions.map((sesh) => (

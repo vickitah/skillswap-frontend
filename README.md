@@ -1,12 +1,90 @@
-# React + Vite
+#  SkillSwap
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SkillSwap is a collaborative platform where users exchange knowledge by teaching and learning from one another — no money involved, just pure skill sharing.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🌐 Frontend: [https://skillswap-frontend-henna.vercel.app](https://skillswap-frontend-henna.vercel.app)
+🔗 Backend: [https://skillswap-backend-qky7.onrender.com](https://skillswap-backend-qky7.onrender.com)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛆 Tech Stack
+
+* **Frontend:** React, TailwindCSS, Firebase Auth, Vite
+* **Backend:** Flask, PostgreSQL, SQLAlchemy, JWT, Firebase Admin
+* **Deployment:** Vercel (frontend), Render (backend)
+* **Auth:** Firebase Authentication + custom JWT
+
+---
+
+## ✨ Features
+
+* 🔐 Secure login with email/password and Google
+* 📬 Real-time messaging between users
+* 🧑‍🏫 Post what you can teach and want to learn
+* 🔎 Filter, search, and explore skill exchange offers
+* 🗕️ Schedule sessions with others
+* 👤 View and update your profile
+* ✅ Auth-protected routes and smart JWT token refresh
+
+---
+
+## 🛠️ Installation (Local)
+
+### Backend
+
+```bash
+cd skillswap-backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Create a `.env` file with:
+
+```env
+DATABASE_URL=your_postgres_url
+SECRET_KEY=your_secret_key
+FIREBASE_CREDENTIALS_JSON=your_firebase_json_inline
+```
+
+```bash
+flask db upgrade
+flask run
+```
+
+### Frontend
+
+```bash
+cd skillswap-frontend
+npm install
+npm run dev
+```
+
+Set up `.env`:
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+---
+
+## 🧪 Testing
+
+Test login, posting exchanges, messaging, and scheduling by signing in with multiple accounts.
+
+---
+## 📚 API Documentation
+
+You can view the full Swagger-generated API docs here:
+
+👉 [SkillSwap API Docs](https://skillswap-backend-qky7.onrender.com/docs)
+
+
+
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
+

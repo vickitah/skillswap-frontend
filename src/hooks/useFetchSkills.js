@@ -1,32 +1,37 @@
 import { useEffect, useState } from 'react';
-import { fetchSkills } from '../services/skillService';
+
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export const useFetchSkills = (filters) => {
   const [skills, setSkills] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const fetchSkills = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const params = new URLSearchParams();
+      if (filters.search) params.append('search', filters.search);
+      if (filters.category) params.append('category', filters.category);
+      filters.tags.forEach(tag => params.append('tags', tag));
+
+      const res = await fetch(`${API_BASE}/skills/?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to fetch skills");
+
+      const data = await res.json();
+      setSkills(data);
+    } catch (err) {
+      console.error("❌ Failed to fetch skills:", err);
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      setError('');
-
-      try {
-        console.log("🌀 [useFetchSkills] Fetching with filters:", filters); // Debug
-        const data = await fetchSkills(filters);
-        console.log("✅ [useFetchSkills] Received data:", data); // Debug
-        setSkills(data);
-      } catch (err) {
-        console.error("❌ [useFetchSkills] Error loading skills:", err);
-        setError('Failed to load skills.');
-      } finally {
-        setLoading(false);
-        console.log("🔚 [useFetchSkills] Finished loading.");
-      }
-    };
-
-    load();
+    fetchSkills();
   }, [filters]);
 
-  return { skills, loading, error };
+  return { skills, loading, error, refetch: fetchSkills }; // ✅ expose refetch
 };
