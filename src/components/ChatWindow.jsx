@@ -5,11 +5,9 @@ export default function ChatWindow({ messages, currentUserEmail, recipientEmail 
   const [showModal, setShowModal] = useState(false);
   const bottomRef = useRef(null);
 
-  // Auto-scroll to latest message
+  // Auto-scroll to bottom on new messages
   useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
@@ -17,7 +15,7 @@ export default function ChatWindow({ messages, currentUserEmail, recipientEmail 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, i) => {
-          const isSender = msg.sender_email === currentUserEmail;
+          const isSender = msg.sender === currentUserEmail;
           return (
             <div
               key={i}
@@ -29,7 +27,10 @@ export default function ChatWindow({ messages, currentUserEmail, recipientEmail 
             >
               <p>{msg.content}</p>
               <p className="text-xs mt-1 text-right opacity-70">
-                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {new Date(msg.timestamp).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
               </p>
             </div>
           );
