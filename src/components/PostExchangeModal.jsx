@@ -10,25 +10,29 @@ const PostExchangeModal = ({ onClose, onSuccess }) => {
     tags: ''
   });
 
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
   const handleCancel = () => {
-    console.log("Cancel clicked");
-    if (typeof onClose === 'function') {
-      onClose();
-    } else {
-      console.error("❌ onClose is not a function:", onClose);
-    }
+    if (typeof onClose === 'function') onClose();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
+    setErrorMsg('');
 
-    const token = localStorage.getItem("token"); // ✅ Fixed from "jwt" to "token"
+    const token = localStorage.getItem("jwt");
     if (!token) {
-      alert("You must be logged in to post a skill exchange.");
+      alert("❌ You must be logged in to post a skill exchange.");
+      setSubmitting(false);
       return;
     }
 
@@ -37,16 +41,25 @@ const PostExchangeModal = ({ onClose, onSuccess }) => {
       tags: formData.tags.split(',').map(tag => tag.trim())
     };
 
-    const result = await postSkill(formattedData, token);
-    if (result) {
-      onSuccess?.();
-      onClose?.();
+    try {
+      const result = await postSkill(formattedData, token);
+      if (result) {
+        onSuccess?.();
+        onClose?.();
+      } else {
+        setErrorMsg("Failed to post skill. Please try again.");
+      }
+    } catch (err) {
+      console.error("🔥 Error submitting skill exchange:", err);
+      setErrorMsg("Something went wrong while posting. Check console.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl">
         <h2 className="text-2xl font-bold mb-4">Post a New Exchange</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
@@ -90,19 +103,30 @@ const PostExchangeModal = ({ onClose, onSuccess }) => {
             onChange={handleChange}
             className="w-full p-2 border rounded-xl"
           />
-          <div className="flex justify-between">
+
+          {errorMsg && (
+            <div className="text-red-600 text-sm font-medium">{errorMsg}</div>
+          )}
+
+          <div className="flex justify-between items-center">
             <button
               type="button"
               onClick={handleCancel}
               className="text-gray-600 hover:underline"
+              disabled={submitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700"
+              className={`px-4 py-2 rounded-xl text-white ${
+                submitting
+                  ? 'bg-green-400 cursor-not-allowed'
+                  : 'bg-green-600 hover:bg-green-700'
+              }`}
+              disabled={submitting}
             >
-              Submit
+              {submitting ? 'Submitting...' : 'Submit'}
             </button>
           </div>
         </form>

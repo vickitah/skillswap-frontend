@@ -1,28 +1,21 @@
-// src/services/skillService.js
-import { API_BASE } from '../utils/api';
+import { API_BASE, fetchWithAuth, handleResponse } from '../utils/api';
 
-export const postSkill = async (skillData, token) => {
+// 🔁 POST a new skill exchange
+export const postSkill = async (skillData) => {
+  const res = await fetchWithAuth(`${API_BASE}/skills`, {
+    method: 'POST',
+    body: JSON.stringify(skillData),
+  });
+  return handleResponse(res);
+};
+
+// 🔍 Get all skill exchanges (optional - public or protected)
+export const getSkills = async () => {
   try {
-    const response = await fetch(`${API_BASE}/skills`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(skillData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("❌ Failed to post skill:", errorData);
-      return null;
-    }
-
-    const data = await response.json();
-    console.log("✅ Skill posted:", data);
-    return data;
+    const res = await fetch(`${API_BASE}/skills`);
+    return await handleResponse(res);
   } catch (err) {
-    console.error("❌ Error in postSkill:", err);
-    return null;
+    console.error("❌ Error fetching skills:", err);
+    return [];
   }
 };

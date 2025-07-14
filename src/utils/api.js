@@ -1,6 +1,7 @@
-import { auth } from "../firebase"; // ✅ Confirm this path is correct
+import { auth } from "../firebase"; // ✅ Make sure this path is correct
 
-const API_BASE = import.meta.env.VITE_API_URL;
+// ✅ Make sure there's NO trailing slash in your .env value
+export const API_BASE = import.meta.env.VITE_API_URL;
 
 // 🔁 Token refresh helper
 const refreshJwtToken = async () => {
@@ -17,22 +18,26 @@ const refreshJwtToken = async () => {
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "JWT refresh failed");
 
-  localStorage.setItem("token", data.token); // Store new JWT
+  localStorage.setItem("token", data.token); // ✅ Consistent key
   return data.token;
 };
 
-// ✅ Fetch with JWT, handles token refresh
-const fetchWithAuth = async (url, options = {}) => {
+// 🔐 Secure fetch wrapper with retry logic
+export const fetchWithAuth = async (url, options = {}) => {
   let token = localStorage.getItem("token");
 
-  let res = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const makeRequest = async (tokenToUse) => {
+    return fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+        Authorization: `Bearer ${tokenToUse}`,
+      },
+    });
+  };
+
+  let res = await makeRequest(token);
 
   if (res.status === 401) {
     let data = {};
@@ -42,17 +47,9 @@ const fetchWithAuth = async (url, options = {}) => {
 
     if (data.message === "Token expired") {
       try {
-        await new Promise(r => setTimeout(r, 300)); // Optional: delay
+        await new Promise((r) => setTimeout(r, 300)); // Small delay
         token = await refreshJwtToken();
-        const retryRes = await fetch(url, {
-          ...options,
-          headers: {
-            "Content-Type": "application/json",
-            ...options.headers,
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        return retryRes;
+        return await makeRequest(token);
       } catch (err) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -61,7 +58,7 @@ const fetchWithAuth = async (url, options = {}) => {
       }
     }
 
-    // 🔴 If 401 but not token expired
+    // 🔴 Unauthorized for another reason
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/login";
@@ -71,8 +68,8 @@ const fetchWithAuth = async (url, options = {}) => {
   return res;
 };
 
-// ✅ Central error handler
-const handleResponse = async (res) => {
+// 🔁 Central error handler
+export const handleResponse = async (res) => {
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     throw new Error(errorData.message || "API Error");
@@ -80,13 +77,15 @@ const handleResponse = async (res) => {
   return await res.json();
 };
 
-// 👤 Get public profile by username
+//
+// 🔽 Profile Utilities (Authenticated)
+//
+
 export const getProfile = async (username) => {
   const res = await fetch(`${API_BASE}/profile/${username}`);
   return handleResponse(res);
 };
 
-// ✏️ Update profile (JWT)
 export const updateProfile = async (data) => {
   const res = await fetchWithAuth(`${API_BASE}/profile/update`, {
     method: "PUT",
@@ -95,7 +94,6 @@ export const updateProfile = async (data) => {
   return handleResponse(res);
 };
 
-// ❌ Delete skill (JWT)
 export const deleteSkill = async (skill, type) => {
   const res = await fetchWithAuth(`${API_BASE}/profile/delete-skill`, {
     method: "POST",
@@ -103,6 +101,3 @@ export const deleteSkill = async (skill, type) => {
   });
   return handleResponse(res);
 };
-
-
-export { API_BASE };
