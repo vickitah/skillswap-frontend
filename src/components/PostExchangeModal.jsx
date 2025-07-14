@@ -29,7 +29,7 @@ const PostExchangeModal = ({ onClose, onSuccess }) => {
     setSubmitting(true);
     setErrorMsg('');
 
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("token"); // ✅ FIXED (was "jwt")
     if (!token) {
       alert("❌ You must be logged in to post a skill exchange.");
       setSubmitting(false);
@@ -42,7 +42,7 @@ const PostExchangeModal = ({ onClose, onSuccess }) => {
     };
 
     try {
-      const result = await postSkill(formattedData, token);
+      const result = await postSkill(formattedData); // ✅ No token param needed
       if (result) {
         onSuccess?.();
         onClose?.();
