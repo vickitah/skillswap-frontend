@@ -16,16 +16,23 @@ export default function ChatWindow({ messages, currentUserEmail, recipientEmail 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, i) => {
           const isSender = msg.sender === currentUserEmail;
+
+          const bubbleClasses = `max-w-xs md:max-w-md px-4 py-2 rounded-xl shadow text-sm ${
+            isSender
+              ? 'bg-blue-600 text-white self-end rounded-br-none'
+              : 'bg-gray-200 text-gray-900 self-start rounded-bl-none'
+          }`;
+
           return (
-            <div
-              key={i}
-              className={`max-w-xs md:max-w-md px-4 py-2 rounded-xl shadow text-sm ${
-                isSender
-                  ? 'bg-blue-600 text-white self-end rounded-br-none'
-                  : 'bg-gray-200 text-gray-900 self-start rounded-bl-none'
-              }`}
-            >
-              <p>{msg.content}</p>
+            <div key={i} className={bubbleClasses}>
+              {msg.type === 'swap_request' ? (
+                <div>
+                  <strong className="block mb-1">🔁 Swap Request</strong>
+                  <p>{msg.content}</p>
+                </div>
+              ) : (
+                <p>{msg.content}</p>
+              )}
               <p className="text-xs mt-1 text-right opacity-70">
                 {new Date(msg.timestamp).toLocaleTimeString([], {
                   hour: '2-digit',

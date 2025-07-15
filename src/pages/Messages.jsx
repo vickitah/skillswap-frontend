@@ -52,14 +52,15 @@ export default function Messages() {
   };
 
   const groupMessagesByUser = (messages, currentEmail) => {
-    const grouped = {};
-    messages.forEach((msg) => {
-      const otherEmail = msg.sender === currentEmail ? msg.receiver : msg.sender;
-      if (!grouped[otherEmail]) grouped[otherEmail] = [];
-      grouped[otherEmail].push(msg);
-    });
-    return Object.entries(grouped).map(([email, msgs]) => ({ email, messages: msgs }));
-  };
+  const grouped = {};
+  messages.forEach((msg) => {
+    const otherEmail = msg.sender === currentEmail ? msg.receiver : msg.sender;
+    if (!grouped[otherEmail]) grouped[otherEmail] = [];
+    grouped[otherEmail].push(msg);
+  });
+  return Object.entries(grouped).map(([email, msgs]) => ({ email, messages: msgs }));
+};
+
 
   const handleSendMessage = async (content) => {
     const token = localStorage.getItem("jwt"); // ✅ consistent token usage
